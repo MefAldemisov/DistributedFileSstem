@@ -22,12 +22,15 @@
             </thead>
             <tbody>
                 <tr
-                    :class="{ active: file.index == active }"
+                    :class="{ active: file.index == active, dir: file.data }"
                     v-for="file in files"
                     :key="file.index"
                     @click="setActive(file.index)"
                 >
-                    <td>{{ file.name }}</td>
+                    <td>
+                        <icon v-if="file.data" type="arrow" width="1rem"></icon
+                        >{{ file.name }}
+                    </td>
                     <td>{{ file.size }}</td>
                     <td>{{ file.upd }}</td>
                 </tr>
@@ -122,5 +125,8 @@ tr:hover {
 .active {
     font-weight: 800;
     background-color: bisque;
+}
+.dir {
+    color: darkcyan;
 }
 </style>
