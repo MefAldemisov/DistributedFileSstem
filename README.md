@@ -1,5 +1,9 @@
 # Distributed File System
 
-Bogdanova Alina
-Dubina Nikita
-Sirgalina Rufina
+![Interface](https://i.imgur.com/EByMnnR.png)
+
+## Authors
+
+-   Bogdanova Alina
+-   Dubina Nikita
+-   Sirgalina Rufina
