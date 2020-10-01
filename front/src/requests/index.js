@@ -17,4 +17,7 @@ export default {
 	mkdir(path) {
 		return apiClient.get(`/mkdir?path=${path}`);
 	},
+	rmdir(path) {
+		return apiClient.get(`/rmdir?path=${path}`);
+	},
 };

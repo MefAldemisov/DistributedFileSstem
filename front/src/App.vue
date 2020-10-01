@@ -41,6 +41,7 @@ export default {
             "./dist/helloworld1.c",
         ]);
         this.setFiles(apiCalls.mkdir, ["./hi"]);
+        this.setFiles(apiCalls.rmdir, ["./hi"]);
     },
     methods: {
         async setFiles(funct, args) {

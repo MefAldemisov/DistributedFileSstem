@@ -69,6 +69,10 @@ def mkdir(path):
     print("MKDIR")
 
 
+def rmdir(path):
+    print("RMDIR")
+
+
 # "refresh", // not related to selected
 @app.route('/refresh', methods=['GET'])
 def getListDir():
@@ -98,6 +102,14 @@ def getMoveFile():
 def getMkDir():
     path = request.args.get('path')
     mkdir(path)
+    return jsonify(getFiles())
+
+
+# "rmdir": path
+@app.route('/rmdir', methods=['GET'])
+def rmDir():
+    path = request.args.get('path')
+    rmdir(path)
     return jsonify(getFiles())
 
 
