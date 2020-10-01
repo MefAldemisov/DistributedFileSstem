@@ -7,22 +7,14 @@ let apiClient = axios.create({
 export default {
 	getFiles() {
 		return apiClient.get("/refresh");
-		// .then((response) => {
-		// 	return response.data[0];
-		// });
 	},
 	copyFile(source, destination) {
 		return apiClient.get(`/copy?from=${source}&to=${destination}`);
-
-		// .then((response) => {
-		// 	return response.data[0];
-		// });
 	},
 	moveFile(source, destination) {
 		return apiClient.get(`/move?from=${source}&to=${destination}`);
-
-		// .then((response) => {
-		// 	return response.data[0];
-		// });
+	},
+	mkdir(path) {
+		return apiClient.get(`/mkdir?path=${path}`);
 	},
 };

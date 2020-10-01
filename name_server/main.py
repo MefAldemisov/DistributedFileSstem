@@ -65,6 +65,10 @@ def moveFileTo(soutce, destination):
     print("Move from", soutce, "to", destination)
 
 
+def mkdir(path):
+    print("MKDIR")
+
+
 # "refresh", // not related to selected
 @app.route('/refresh', methods=['GET'])
 def getListDir():
@@ -89,7 +93,14 @@ def getMoveFile():
     return jsonify(getFiles())
 
 
-# "mkdir", // not related to selected
+# "mkdir": path
+@app.route('/mkdir', methods=['GET'])
+def getMkDir():
+    path = request.args.get('path')
+    mkdir(path)
+    return jsonify(getFiles())
+
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
