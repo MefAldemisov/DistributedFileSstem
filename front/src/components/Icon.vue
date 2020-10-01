@@ -1,5 +1,6 @@
 <script>
 import IconArrow from "./icons/IconArrow.vue";
+import IconArrowBack from "./icons/IconArrowBack.vue";
 import IconCopy from "./icons/IconCopy.vue";
 import IconDownload from "./icons/IconDownload.vue";
 import IconInfo from "./icons/IconInfo.vue";
@@ -24,6 +25,7 @@ export default {
     },
     components: {
         IconArrow,
+        IconArrowBack,
         IconCopy,
         IconDownload,
         IconInfo,
@@ -41,6 +43,10 @@ export default {
 <template>
     <div class="inline hoverable" :title="type">
         <icon-arrow :width="width" v-if="type == 'arrow'"></icon-arrow>
+        <icon-arrow-back
+            :width="width"
+            v-if="type == 'arrow-back'"
+        ></icon-arrow-back>
         <icon-copy :width="width" v-if="type == 'copy'"></icon-copy>
         <icon-download :width="width" v-if="type == 'download'"></icon-download>
         <icon-info :width="width" v-if="type == 'info'"></icon-info>

@@ -1,0 +1,149 @@
+<script>
+import Icon from "./Icon.vue";
+export default {
+    name: "FSTable",
+    components: {
+        Icon,
+    },
+    // props: {
+
+    // },
+    data() {
+        return {
+            files: [
+                {
+                    index: 0,
+                    name: "dist",
+                    size: "0",
+                    upd: "23.05.20",
+                    data: [],
+                },
+                {
+                    index: 1,
+                    name: "dir",
+                    size: "1024",
+                    data: [
+                        {
+                            index: 0,
+                            name: "helloworld.c",
+                            size: "256",
+                            upd: "23.05.19",
+                        },
+                        {
+                            index: 1,
+                            name: "helloworld.cpp",
+                            size: "184",
+                            upd: "23.05.20",
+                        },
+                    ],
+                },
+                {
+                    index: 2,
+                    name: "helloworld.c",
+                    size: "256",
+                    upd: "23.05.19",
+                },
+                {
+                    index: 3,
+                    name: "helloworld.cpp",
+                    size: "184",
+                    upd: "23.05.20",
+                },
+                {
+                    index: 4,
+                    name: "aaa.txt",
+                    size: "256",
+                    upd: "23.05.19",
+                },
+            ],
+            current_location: [],
+            active: 0,
+        };
+    },
+    computed: {
+        current_files() {
+            let res = this.files;
+            for (let i = 0; i < this.current_location.length; i++) {
+                res = res[this.current_location[i]].data;
+            }
+            return res;
+        },
+        current_path() {
+            let str = ".";
+            let res = this.files;
+            for (let i = 0; i < this.current_location.length; i++) {
+                const loc = res[this.current_location[i]];
+                res = loc.data;
+                str += `/${loc.name}`;
+            }
+            str += `/${this.current_files[this.active].name}`;
+
+            return str;
+        },
+    },
+    methods: {
+        setActive(index) {
+            if (this.active != index) {
+                this.active = index;
+                this.$emit("upd_active", this.current_files[index]);
+            } else if (this.current_files[index].data) {
+                // if is dir -> go deep
+                if (this.current_files[index].data.length > 0) {
+                    this.current_location.push(index);
+                    this.active = 0;
+                } else {
+                    alert("The directory is empty");
+                }
+            }
+            this.$emit("upd_dir", this.current_path);
+        },
+        backDir() {
+            this.current_location.pop();
+            this.$emit("upd_dir", this.current_path);
+            this.$emit("upd_active", this.current_files[0]);
+        },
+    },
+};
+</script>
+<template>
+    <table>
+        <thead>
+            <th>Filename</th>
+            <th>Size</th>
+            <th>Last update</th>
+        </thead>
+        <tbody>
+            <tr v-if="current_location.length" @click="backDir()">
+                <td><icon type="arrow-back" width="1rem"></icon></td>
+            </tr>
+            <tr
+                :class="{
+                    'active-row': active == file.index,
+                    dir: file.data,
+                }"
+                v-for="file in current_files"
+                :key="file.index"
+                @click="setActive(file.index)"
+            >
+                <td>
+                    <icon v-if="file.data" type="arrow" width="1rem"></icon
+                    >{{ file.name }}
+                </td>
+                <td>{{ file.size }}</td>
+                <td>{{ file.upd }}</td>
+            </tr>
+        </tbody>
+    </table>
+</template>
+<style>
+tr:hover {
+    background-color: bisque;
+}
+.active-row {
+    font-weight: 800;
+    background-color: bisque;
+}
+.dir {
+    color: darkcyan;
+}
+</style>
