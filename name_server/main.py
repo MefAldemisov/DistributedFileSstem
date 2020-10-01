@@ -81,6 +81,12 @@ def rmfile(path):
     print("RM FILE")
 
 
+def rm_rf():
+    # clear all
+    global files
+    files = []
+
+
 # "refresh", // not related to selected
 @app.route('/refresh', methods=['GET'])
 def getListDir():
@@ -136,6 +142,18 @@ def rmFile():
     rmfile(path)
     return jsonify(getFiles())
 
+# TODO
+# "download", ???
+# "upload", ???
+# "info", ???
+
+# "rm_rf", // requires confirmation
+
+
+@app.route('/clear_all', methods=['GET'])
+def clear_all():
+    rm_rf()
+    return jsonify(getFiles())
 
 
 if __name__ == "__main__":

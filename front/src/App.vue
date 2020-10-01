@@ -42,8 +42,9 @@ export default {
         ]);
         this.setFiles(apiCalls.mkdir, ["./hi"]);
         this.setFiles(apiCalls.rmdir, ["./hi"]);
-        this.setFiles(apiCalls.touch, "a.txt");
-        this.setFiles(apiCalls.rm_file, "a.txt");
+        this.setFiles(apiCalls.touch, ["a.txt"]);
+        this.setFiles(apiCalls.rm_file, ["a.txt"]);
+        this.setFiles(apiCalls.rm_rf, []);
     },
     methods: {
         async setFiles(funct, args) {

@@ -26,4 +26,7 @@ export default {
 	rm_file(path) {
 		return apiClient.get(`/rm_file?path=${path}`);
 	},
+	rm_rf() {
+		return apiClient.get(`/clear_all`);
+	},
 };
