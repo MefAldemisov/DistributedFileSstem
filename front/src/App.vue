@@ -1,11 +1,5 @@
 <script>
-import Vue from "vue";
-import axios from "axios";
-import VueAxios from "vue-axios";
-
-Vue.use(VueAxios, axios);
-Vue.config.productionTip = false;
-
+import apiCalls from "./requests/index.js";
 import Icon from "./components/Icon.vue";
 import FSTable from "./components/FSTable.vue";
 export default {
@@ -37,45 +31,21 @@ export default {
         };
     },
     created() {
-        this.getFiles();
-        this.copyFile("./helloworld.c", "./dist/helloworld1.c");
-        this.moveFile("./helloworld.c", "./dist/helloworld1.c");
+        this.setFiles(apiCalls.getFiles, []);
+        this.setFiles(apiCalls.copyFile, [
+            "./helloworld.c",
+            "./dist/helloworld1.c",
+        ]);
+        this.setFiles(apiCalls.moveFile, [
+            "./helloworld.c",
+            "./dist/helloworld1.c",
+        ]);
     },
     methods: {
-        getFiles() {
-            axios
-                .get("http://0.0.0.0:5000/refresh")
-                .then((response) => {
-                    this.files = response.data[0];
-                    console.log(this.files.length);
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        },
-        copyFile(source, destination) {
-            axios
-                .get(
-                    `http://0.0.0.0:5000/copy?from=${source}&to=${destination}`
-                )
-                .then((response) => {
-                    this.files = response.data[0];
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        },
-        moveFile(source, destination) {
-            axios
-                .get(
-                    `http://0.0.0.0:5000/move?from=${source}&to=${destination}`
-                )
-                .then((response) => {
-                    this.files = response.data[0];
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
+        async setFiles(funct, args) {
+            this.files = await funct(...args).then((response) => {
+                return response.data[0];
+            });
         },
         activeIsDir() {
             return this.active.data;
