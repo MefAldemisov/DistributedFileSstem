@@ -5,57 +5,13 @@ export default {
     components: {
         Icon,
     },
-    // props: {
-
-    // },
+    props: {
+        files: {
+            required: true,
+        },
+    },
     data() {
         return {
-            files: [
-                {
-                    index: 0,
-                    name: "dist",
-                    size: "0",
-                    upd: "23.05.20",
-                    data: [],
-                },
-                {
-                    index: 1,
-                    name: "dir",
-                    size: "1024",
-                    data: [
-                        {
-                            index: 0,
-                            name: "helloworld.c",
-                            size: "256",
-                            upd: "23.05.19",
-                        },
-                        {
-                            index: 1,
-                            name: "helloworld.cpp",
-                            size: "184",
-                            upd: "23.05.20",
-                        },
-                    ],
-                },
-                {
-                    index: 2,
-                    name: "helloworld.c",
-                    size: "256",
-                    upd: "23.05.19",
-                },
-                {
-                    index: 3,
-                    name: "helloworld.cpp",
-                    size: "184",
-                    upd: "23.05.20",
-                },
-                {
-                    index: 4,
-                    name: "aaa.txt",
-                    size: "256",
-                    upd: "23.05.19",
-                },
-            ],
             current_location: [],
             active: 0,
         };
@@ -66,6 +22,7 @@ export default {
             for (let i = 0; i < this.current_location.length; i++) {
                 res = res[this.current_location[i]].data;
             }
+
             return res;
         },
         current_path() {

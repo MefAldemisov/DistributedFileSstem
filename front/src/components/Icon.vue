@@ -22,6 +22,9 @@ export default {
         width: {
             default: "1.5rem",
         },
+        disabled: {
+            default: false,
+        },
     },
     components: {
         IconArrow,
@@ -41,7 +44,11 @@ export default {
 };
 </script>
 <template>
-    <div class="inline hoverable" :title="type">
+    <div
+        class="inline"
+        :class="disabled ? 'disabled' : 'hoverable'"
+        :title="disabled ? 'Not applicable for this data-type' : type"
+    >
         <icon-arrow :width="width" v-if="type == 'arrow'"></icon-arrow>
         <icon-arrow-back
             :width="width"
@@ -67,6 +74,9 @@ export default {
 }
 .hoverable:hover {
     transform: scale(1.5);
+}
+.disabled {
+    opacity: 0.5;
 }
 </style>
 
