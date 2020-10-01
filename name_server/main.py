@@ -73,6 +73,14 @@ def rmdir(path):
     print("RMDIR")
 
 
+def mkfile(path):
+    print("NEW FILE")
+
+
+def rmfile(path):
+    print("RM FILE")
+
+
 # "refresh", // not related to selected
 @app.route('/refresh', methods=['GET'])
 def getListDir():
@@ -110,6 +118,22 @@ def getMkDir():
 def rmDir():
     path = request.args.get('path')
     rmdir(path)
+    return jsonify(getFiles())
+
+
+# "touch": path
+@app.route('/touch', methods=['GET'])
+def createFile():
+    path = request.args.get('path')
+    mkfile(path)
+    return jsonify(getFiles())
+
+
+# "rm_file": path
+@app.route('/rm_file', methods=['GET'])
+def rmFile():
+    path = request.args.get('path')
+    rmfile(path)
     return jsonify(getFiles())
 
 

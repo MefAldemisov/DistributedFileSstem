@@ -20,4 +20,10 @@ export default {
 	rmdir(path) {
 		return apiClient.get(`/rmdir?path=${path}`);
 	},
+	touch(path) {
+		return apiClient.get(`/touch?path=${path}`);
+	},
+	rm_file(path) {
+		return apiClient.get(`/rm_file?path=${path}`);
+	},
 };
