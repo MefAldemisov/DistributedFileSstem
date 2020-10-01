@@ -1,4 +1,11 @@
 <script>
+import Vue from "vue";
+import axios from "axios";
+import VueAxios from "vue-axios";
+
+Vue.use(VueAxios, axios);
+Vue.config.productionTip = false;
+
 import Icon from "./components/Icon.vue";
 import FSTable from "./components/FSTable.vue";
 export default {
@@ -26,39 +33,24 @@ export default {
             ],
             fileOnly: ["copy", "move", "rm_file", "download"],
             dirOnly: ["rm_dir"],
-            files: [
-                {
-                    index: 0,
-                    name: "dist",
-                    size: "0",
-                    upd: "23.05.20",
-                    data: [],
-                },
-                {
-                    index: 1,
-                    name: "dir",
-                    size: "1024",
-                    data: [
-                        {
-                            index: 0,
-                            name: "helloworld.c",
-                            size: "256",
-                            upd: "23.05.19",
-                        },
-                        {
-                            index: 1,
-                            name: "helloworld.cpp",
-                            size: "184",
-                            upd: "23.05.20",
-                        },
-                    ],
-                },
-                {
-                    index: 2,
-                    name: "helloworld.c",
-                    size: "256",
-                    upd: "23.05.19",
-                },
+            files: [],
+        };
+    },
+    created() {
+        this.getFiles();
+    },
+    methods: {
+        getFiles() {
+            axios
+                .get("http://0.0.0.0:5000/refresh")
+                .then((response) => {
+                    this.files = response.data[0];
+                    console.log(this.files.length);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        },
                 {
                     index: 3,
                     name: "helloworld.cpp",
