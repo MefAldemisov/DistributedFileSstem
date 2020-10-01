@@ -38,6 +38,8 @@ export default {
     },
     created() {
         this.getFiles();
+        this.copyFile("./helloworld.c", "./dist/helloworld1.c");
+        this.moveFile("./helloworld.c", "./dist/helloworld1.c");
     },
     methods: {
         getFiles() {
@@ -51,22 +53,30 @@ export default {
                     console.error(error);
                 });
         },
-                {
-                    index: 3,
-                    name: "helloworld.cpp",
-                    size: "184",
-                    upd: "23.05.20",
-                },
-                {
-                    index: 4,
-                    name: "aaa.txt",
-                    size: "256",
-                    upd: "23.05.19",
-                },
-            ],
-        };
-    },
-    methods: {
+        copyFile(source, destination) {
+            axios
+                .get(
+                    `http://0.0.0.0:5000/copy?from=${source}&to=${destination}`
+                )
+                .then((response) => {
+                    this.files = response.data[0];
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        },
+        moveFile(source, destination) {
+            axios
+                .get(
+                    `http://0.0.0.0:5000/move?from=${source}&to=${destination}`
+                )
+                .then((response) => {
+                    this.files = response.data[0];
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        },
         activeIsDir() {
             return this.active.data;
         },

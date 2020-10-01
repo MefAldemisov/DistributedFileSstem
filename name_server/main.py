@@ -57,12 +57,39 @@ def getFiles():
     return files
 
 
+def copyFileTo(soutce, destination):
+    print("Copy from", soutce, "to", destination)
+
+
+def moveFileTo(soutce, destination):
+    print("Move from", soutce, "to", destination)
+
+
 # "refresh", // not related to selected
 @app.route('/refresh', methods=['GET'])
 def getListDir():
     return jsonify(getFiles())
 
 
+# "copy": from, to
+@app.route('/copy', methods=['GET'])
+def getCopyFileTo():
+    source = request.args.get('from')
+    destination = request.args.get('to')
+    copyFileTo(source, destination)
+    return jsonify(getFiles())
+
+
+# "move": from, to
+@app.route('/move', methods=['GET'])
+def getMoveFile():
+    source = request.args.get('from')
+    destination = request.args.get('to')
+    moveFileTo(source, destination)
+    return jsonify(getFiles())
+
+
+# "mkdir", // not related to selected
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
