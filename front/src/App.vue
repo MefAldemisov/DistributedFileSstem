@@ -147,7 +147,11 @@ export default {
                 let arg = this.input.dir;
                 this.setFiles(this.input.callback, [arg]);
                 return;
-            } else if (this.input.args == 3) {
+            } else if (
+                this.input.args == 3 &&
+                !this.input.need_name &&
+                !this.input.need_dir
+            ) {
                 // set dir+name callback
                 let arg = `${this.input.dir}/${this.input.name}`;
                 this.setFiles(this.input.callback, [this.dir, arg]);
