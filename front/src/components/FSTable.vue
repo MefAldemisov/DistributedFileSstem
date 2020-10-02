@@ -14,6 +14,8 @@ export default {
         return {
             current_location: [],
             active: 0,
+            input_value: "",
+            need_input: false,
         };
     },
     computed: {
@@ -63,34 +65,36 @@ export default {
 };
 </script>
 <template>
-    <table>
-        <thead>
-            <th>Filename</th>
-            <th>Size</th>
-            <th>Last update</th>
-        </thead>
-        <tbody>
-            <tr v-if="current_location.length" @click="backDir()">
-                <td><icon type="arrow-back" width="1rem"></icon></td>
-            </tr>
-            <tr
-                :class="{
-                    'active-row': active == file.index,
-                    dir: file.data,
-                }"
-                v-for="file in current_files"
-                :key="file.index"
-                @click="setActive(file.index)"
-            >
-                <td>
-                    <icon v-if="file.data" type="arrow" width="1rem"></icon
-                    >{{ file.name }}
-                </td>
-                <td>{{ file.size }}</td>
-                <td>{{ file.upd }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="table">
+        <table>
+            <thead>
+                <th>Filename</th>
+                <th>Size</th>
+                <th>Last update</th>
+            </thead>
+            <tbody>
+                <tr v-if="current_location.length" @click="backDir()">
+                    <td><icon type="arrow-back" width="1rem"></icon></td>
+                </tr>
+                <tr
+                    :class="{
+                        'active-row': active == file.index,
+                        dir: file.data,
+                    }"
+                    v-for="file in current_files"
+                    :key="file.index"
+                    @click="setActive(file.index)"
+                >
+                    <td>
+                        <icon v-if="file.data" type="arrow" width="1rem"></icon
+                        >{{ file.name }}
+                    </td>
+                    <td>{{ file.size }}</td>
+                    <td>{{ file.upd }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </template>
 <style>
 tr:hover {

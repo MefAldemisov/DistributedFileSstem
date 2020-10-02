@@ -2,11 +2,15 @@
 import apiCalls from "./requests/index.js";
 import Icon from "./components/Icon.vue";
 import FSTable from "./components/FSTable.vue";
+import InputModal from "./components/InputModal.vue";
+import DirModal from "./components/DirModal.vue";
 export default {
     name: "App",
     components: {
         Icon,
         FSTable,
+        InputModal,
+        DirModal,
     },
     data() {
         return {
@@ -28,23 +32,20 @@ export default {
             fileOnly: ["copy", "move", "rm_file", "download"],
             dirOnly: ["rm_dir"],
             files: [],
+
+            input: {
+                name: "",
+                dir: "",
+                need_name: false,
+                need_dir: false,
+                callback: null,
+                args: 0, // 1- file, 2-dir 3-both
+            },
         };
     },
+
     created() {
         this.setFiles(apiCalls.getFiles, []);
-        this.setFiles(apiCalls.copyFile, [
-            "./helloworld.c",
-            "./dist/helloworld1.c",
-        ]);
-        this.setFiles(apiCalls.moveFile, [
-            "./helloworld.c",
-            "./dist/helloworld1.c",
-        ]);
-        this.setFiles(apiCalls.mkdir, ["./hi"]);
-        this.setFiles(apiCalls.rmdir, ["./hi"]);
-        this.setFiles(apiCalls.touch, ["a.txt"]);
-        this.setFiles(apiCalls.rm_file, ["a.txt"]);
-        this.setFiles(apiCalls.rm_rf, []);
     },
     methods: {
         async setFiles(funct, args) {
@@ -59,7 +60,72 @@ export default {
             if (this.iconIsNotActive(type)) {
                 return;
             }
-            alert(type);
+            let index = this.topIcons.indexOf(type);
+            switch (index) {
+                case 0:
+                    // "refresh"
+                    this.setFiles(apiCalls.getFiles, []);
+                    break;
+                case 1:
+                    // copy
+                    this.input.need_name = true;
+                    this.input.need_dir = true;
+                    this.input.callback = apiCalls.copyFile;
+                    this.input.args = 3;
+                    break;
+                case 2:
+                    // move
+                    this.input.need_name = true;
+                    this.input.need_dir = true;
+                    this.input.callback = apiCalls.moveFile;
+                    this.input.args = 3;
+                    break;
+                case 3:
+                    // mkdir
+                    this.input.need_name = true;
+                    this.input.callback = apiCalls.mkdir;
+                    this.input.args = 1;
+                    break;
+                case 4:
+                    // rmdir - requires confirmation
+                    const r = confirm(
+                        `Are you sure, that you want to delete directory ${this.dir}?`
+                    );
+                    if (r == true) {
+                        this.setFiles(apiCalls.rmdir, [this.dir]);
+                    }
+                    break;
+                case 5:
+                    // create file
+                    this.input.need_name = true;
+                    this.input.callback = apiCalls.touch;
+                    this.input.args = 1;
+                    break;
+                case 6:
+                    // rm file
+                    const conf = confirm(
+                        `Are you sure, that you want to delete file ${this.dir}?`
+                    );
+                    if (conf == true) {
+                        this.setFiles(apiCalls.rm_file, [this.dir]);
+                    }
+                    break;
+                case 7:
+                // download
+                case 8:
+                // upload
+                case 9:
+                    // info
+                    break;
+                case 10:
+                    // rm rf - requires confirmation
+                    const conf = confirm(
+                        `Are you sure, that you want to delete everything ${this.dir}?`
+                    );
+                    if (conf == true) {
+                        this.setFiles(apiCalls.rm_rf, []);
+                    }
+            }
         },
         iconIsNotActive(type) {
             const f = this.fileOnly.includes(type);
@@ -69,6 +135,34 @@ export default {
                 (d && this.activeIsDir()) ||
                 (!d && !f && this.active.name)
             );
+        },
+        checkInput(change) {
+            if (change == "name" && this.input.args == 1) {
+                // set name - call calback
+                let arg = this.input.name;
+                this.setFiles(this.input.callback, [arg]);
+                return;
+            } else if (change == "dir" && this.input.args == 2) {
+                // set dor callback
+                let arg = this.input.dir;
+                this.setFiles(this.input.callback, [arg]);
+                return;
+            } else if (this.input.args == 3) {
+                // set dir+name callback
+                let arg = `${this.input.dir}/${this.input.name}`;
+                this.setFiles(this.input.callback, [this.dir, arg]);
+                return;
+            }
+        },
+        getName(name) {
+            this.input.name = name;
+            this.input.need_name = false;
+            this.checkInput("name");
+        },
+        getDir(dir) {
+            this.input.dir = dir;
+            this.input.need_dir = false;
+            this.checkInput("dir");
         },
     },
 };
@@ -86,6 +180,15 @@ export default {
             </span>
         </div>
         <div>{{ dir }}</div>
+        <input-modal
+            v-if="input.need_name"
+            @readen="getName($event)"
+        ></input-modal>
+        <dir-modal
+            v-if="input.need_dir"
+            @readen="getDir($event)"
+            :files="files"
+        ></dir-modal>
         <f-s-table
             :files="files"
             @upd_active="active = $event"
@@ -101,10 +204,10 @@ export default {
     text-align: center;
     color: #2c3e50;
     margin-top: 60px;
-}
-
-table {
     width: 60%;
     margin: auto;
+}
+table {
+    width: 100%;
 }
 </style>
