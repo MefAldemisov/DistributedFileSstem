@@ -119,10 +119,10 @@ export default {
                     break;
                 case 10:
                     // rm rf - requires confirmation
-                    const conf = confirm(
+                    const rm = confirm(
                         `Are you sure, that you want to delete everything ${this.dir}?`
                     );
-                    if (conf == true) {
+                    if (rm == true) {
                         this.setFiles(apiCalls.rm_rf, []);
                     }
             }

@@ -8,7 +8,7 @@ export default {
     },
     data() {
         return {
-            selected: 0,
+            selected: "",
         };
     },
     methods: {
@@ -34,7 +34,7 @@ export default {
             this.selected = path;
         },
         done() {
-            this.$emit("readen", this.input_value);
+            this.$emit("readen", this.selected);
         },
     },
 };
