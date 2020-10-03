@@ -73,7 +73,7 @@ def getListDir():
 @app.route('/copy', methods=['GET'])
 def getCopyFileTo():
     source = DIR + request.args.get('from')[2:]
-    destination = DIR + request.args.get('to')[2:]
+    destination = DIR + request.args.get('to')[1:]
     copyFileTo(source, destination)
     return jsonify(getFiles())
 

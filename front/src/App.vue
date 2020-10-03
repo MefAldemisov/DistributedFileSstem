@@ -76,10 +76,10 @@ export default {
                     break;
                 case 2:
                     // move
-                    this.input.need_name = true;
+                    // this.input.need_name = true;
                     this.input.need_dir = true;
                     this.input.callback = apiCalls.moveFile;
-                    this.input.args = 3;
+                    this.input.args = 2;
                     break;
                 case 3:
                     // mkdir
@@ -146,9 +146,12 @@ export default {
                 this.setFiles(this.input.callback, [arg]);
                 return;
             } else if (change == "dir" && this.input.args == 2) {
-                // set dor callback
+                // set dir callback (e.g. move)
                 let arg = this.input.dir;
-                this.setFiles(this.input.callback, [arg]);
+                this.setFiles(this.input.callback, [
+                    this.dir,
+                    `${arg}/${this.active.name}`,
+                ]);
                 return;
             } else if (
                 this.input.args == 3 &&
@@ -190,6 +193,7 @@ export default {
         upload(event) {
             const f = event.target.files[0];
             this.setFiles(apiCalls.upload, [f]);
+            this.input.need_file = false;
         },
     },
 };
