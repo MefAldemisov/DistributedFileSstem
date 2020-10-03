@@ -29,4 +29,15 @@ export default {
 	rm_rf() {
 		return apiClient.get(`/clear_all`);
 	},
+	upload(data) {
+		let fd = new FormData();
+		fd.append("name", data.name);
+		fd.append("file", data);
+
+		return apiClient.post(`/upload/`, fd, {
+			headers: {
+				"Content-Type": "multipart/form-data",
+			},
+		});
+	},
 };
