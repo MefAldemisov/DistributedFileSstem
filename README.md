@@ -23,3 +23,20 @@
 | **POST** (upload) ????                                                  | ???                                                                                                                                                                                                                                                                           |
 | **GET** `/info?name=...`                                                | REMOVED (data passed with fs)[Get file size](https://stackoverflow.com/questions/6591931/getting-file-size-in-python) <br>[Date and time of creation and modification](https://stackoverflow.com/questions/237079/how-to-get-file-creation-modification-date-times-in-python) |
 | **rm_rf** `/clear_all`                                                  | [HOWTO rm non-empty dir](https://stackoverflow.com/questions/303200/how-do-i-remove-delete-a-folder-that-is-not-empty)                                                                                                                                                        |
+
+## Docker
+
+### front
+
+```
+cd ./front
+docker build -t front .
+docker run -it -p 8080:8080 --rm --name dockerize-front front
+```
+
+### name_server
+
+```
+cd ./name_server
+python3 main.py
+```
