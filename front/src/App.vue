@@ -26,7 +26,7 @@ export default {
                 "rm_file", // applicable ONLY to file
                 "download", // applicable ONLY to file
                 "upload", // not related to selcted
-                "info", // related to any selected
+                // "info", // related to any selected
                 "rm_rf", // requires confirmation
             ],
             fileOnly: ["copy", "move", "rm_file", "download"],
@@ -40,6 +40,7 @@ export default {
                 need_dir: false,
                 callback: null,
                 args: 0, // 1- file, 2-dir 3-both
+                need_file: false,
             },
         };
     },
@@ -113,11 +114,10 @@ export default {
                 case 7:
                 // download
                 case 8:
-                // upload
-                case 9:
-                    // info
+                    // upload
+                    this.input.need_file = true;
                     break;
-                case 10:
+                case 9:
                     // rm rf - requires confirmation
                     const rm = confirm(
                         `Are you sure, that you want to delete everything ${this.dir}?`
@@ -168,6 +168,10 @@ export default {
             this.input.need_dir = false;
             this.checkInput("dir");
         },
+        upload(event) {
+            const f = event.target.files[0];
+            this.setFiles(apiCalls.upload, [f]);
+        },
     },
 };
 </script>
@@ -184,6 +188,7 @@ export default {
             </span>
         </div>
         <div>{{ dir }}</div>
+        <input v-if="input.need_file" type="file" @change="upload($event)" />
         <input-modal
             v-if="input.need_name"
             @readen="getName($event)"
@@ -213,5 +218,9 @@ export default {
 }
 table {
     width: 100%;
+}
+.hidden {
+    opacity: 100%;
+    display: none;
 }
 </style>

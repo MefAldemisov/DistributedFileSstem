@@ -1,5 +1,5 @@
 from flask import jsonify
-from flask import Flask, session, redirect, url_for, request, render_template
+from flask import Flask, session, redirect, url_for, request, render_template, send_file
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -147,9 +147,17 @@ def rmFile():
 # "upload", ???
 # "info", ???
 
+
+# "upload", file
+@app.route('/upload/', methods=['POST'])
+def upload_file():
+    print("Filename", [request.form[i] for i in request.form.keys()])
+    f = request.files['file']
+    f.save(f.filename)
+    return jsonify(getFiles())
+
+
 # "rm_rf", // requires confirmation
-
-
 @app.route('/clear_all', methods=['GET'])
 def clear_all():
     rm_rf()
