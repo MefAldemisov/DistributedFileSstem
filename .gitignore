@@ -1,3 +1,4 @@
 /name_server/fs
 /name_server/fs*
 /name_server/fs/*
+*/yarn.lock
