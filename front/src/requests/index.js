@@ -29,6 +29,11 @@ export default {
 	rm_rf() {
 		return apiClient.get(`/clear_all`);
 	},
+	download(path) {
+		return apiClient.get(`/download?path=${path}`, {
+			responseType: "blob",
+		});
+	},
 	upload(data) {
 		let fd = new FormData();
 		fd.append("name", data.name);

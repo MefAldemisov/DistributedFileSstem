@@ -112,7 +112,9 @@ export default {
                     }
                     break;
                 case 7:
-                // download
+                    // download
+                    this.download();
+                    break;
                 case 8:
                     // upload
                     this.input.need_file = true;
@@ -167,6 +169,22 @@ export default {
             this.input.dir = dir;
             this.input.need_dir = false;
             this.checkInput("dir");
+        },
+        async download() {
+            await apiCalls
+                .download(this.dir)
+                .then((response) => {
+                    const url = window.URL.createObjectURL(
+                        new Blob([response.data])
+                    );
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.setAttribute("download", "file.pdf"); // TODO: change name
+                    link.setAttribute("class", "hidden");
+                    document.body.appendChild(link);
+                    link.click();
+                })
+                .catch((err) => console.log("Error", err));
         },
         upload(event) {
             const f = event.target.files[0];

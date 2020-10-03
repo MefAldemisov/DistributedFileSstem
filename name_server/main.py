@@ -46,7 +46,7 @@ files = [
     },
     {
         "index": 4,
-        "name": "aaa.txt",
+        "name": "main.py",
         "size": "256",
         "upd": "23.05.19",
     },
@@ -142,10 +142,12 @@ def rmFile():
     rmfile(path)
     return jsonify(getFiles())
 
-# TODO
-# "download", ???
-# "upload", ???
-# "info", ???
+
+# "download", path
+@app.route('/download', methods=['GET'])
+def download_file():
+    path = request.args.get('path')
+    return send_file(path, as_attachment=True)
 
 
 # "upload", file
