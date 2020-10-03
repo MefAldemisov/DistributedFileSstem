@@ -44,7 +44,6 @@ export default {
             },
         };
     },
-
     created() {
         this.setFiles(apiCalls.getFiles, []);
     },
@@ -136,7 +135,8 @@ export default {
             return !(
                 (f && !this.activeIsDir()) ||
                 (d && this.activeIsDir()) ||
-                (!d && !f && this.active.name)
+                (!d && !f) ||
+                !this.active.name
             );
         },
         checkInput(change) {

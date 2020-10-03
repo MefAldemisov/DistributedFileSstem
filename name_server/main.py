@@ -7,6 +7,10 @@ import shutil
 app = Flask(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
 DIR = "./fs/"
+try:
+    os.mkdir(DIR)
+except:
+    print("Fs already exist")
 
 
 def getFiles(dir=DIR):
@@ -40,8 +44,7 @@ def mkdir(path):
 
 def rmdir(path):
     print("RMDIR")
-    os.rmdir(path)
-    # TODO check dir is not empty -> remove files
+    shutil.rmtree(path)
 
 
 def mkfile(path):
@@ -57,6 +60,7 @@ def rmfile(path):
 def rm_rf():
     # clear all
     rmdir(DIR)
+    mkdir(DIR)
 
 
 # "refresh", // not related to selected
