@@ -1,90 +1,62 @@
 from flask import jsonify
 from flask import Flask, session, redirect, url_for, request, render_template, send_file
 from flask_cors import CORS
+import os
+import shutil
 
 app = Flask(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
-
-files = [
-    {
-        "index": 0,
-        "name": "dist",
-        "size": "0",
-        "upd": "23.05.20",
-        "data": [],
-    },
-    {
-        "index": 1,
-        "name": "dir",
-        "size": "1024",
-        "data": [
-            {
-                "index": 0,
-                "name": "helloworld.c",
-                "size": "256",
-                "upd": "23.05.19",
-            },
-            {
-                "index": 1,
-                "name": "helloworld.cpp",
-                "size": "184",
-                "upd": "23.05.20",
-            },
-        ],
-    },
-    {
-        "index": 2,
-        "name": "helloworld.c",
-        "size": "256",
-        "upd": "23.05.19",
-    },
-    {
-        "index": 3,
-        "name": "helloworld.cpp",
-        "size": "184",
-        "upd": "23.05.20",
-    },
-    {
-        "index": 4,
-        "name": "main.py",
-        "size": "256",
-        "upd": "23.05.19",
-    },
-],
+DIR = "./fs/"
 
 
-def getFiles():
-    return files
+def getFiles(dir=DIR):
+    ls_dir = os.listdir(dir)
+    data = [{"index": i,
+             "name": ls_dir[i],
+             "size": os.stat(dir+ls_dir[i]).st_size,
+             "upd": os.stat(dir+ls_dir[i]).st_mtime} for i in range(len(ls_dir))]
+    for d in data:
+        print(dir + d['name'])
+        if os.path.isdir(dir + d['name']):
+            print("YES", dir + d['name'])
+            d['data'] = getFiles(dir + d['name'] + "/")
+    return data
 
 
-def copyFileTo(soutce, destination):
-    print("Copy from", soutce, "to", destination)
+def copyFileTo(souce, destination):
+    print("Copy from", souce, "to", destination)
+    shutil.copyfile(souce, destination)
 
 
-def moveFileTo(soutce, destination):
-    print("Move from", soutce, "to", destination)
+def moveFileTo(souce, destination):
+    print("Move from", souce, "to", destination)
+    shutil.move(souce, destination)
 
 
 def mkdir(path):
     print("MKDIR")
+    os.mkdir(path)
 
 
 def rmdir(path):
     print("RMDIR")
+    os.rmdir(path)
+    # TODO check dir is not empty -> remove files
 
 
 def mkfile(path):
     print("NEW FILE")
+    open(path, 'a').close()
 
 
 def rmfile(path):
     print("RM FILE")
+    os.remove(path)
 
 
 def rm_rf():
     # clear all
-    global files
-    files = []
+    rmdir(DIR)
 
 
 # "refresh", // not related to selected
@@ -96,8 +68,8 @@ def getListDir():
 # "copy": from, to
 @app.route('/copy', methods=['GET'])
 def getCopyFileTo():
-    source = request.args.get('from')
-    destination = request.args.get('to')
+    source = DIR + request.args.get('from')[2:]
+    destination = DIR + request.args.get('to')[2:]
     copyFileTo(source, destination)
     return jsonify(getFiles())
 
@@ -105,8 +77,8 @@ def getCopyFileTo():
 # "move": from, to
 @app.route('/move', methods=['GET'])
 def getMoveFile():
-    source = request.args.get('from')
-    destination = request.args.get('to')
+    source = DIR + request.args.get('from')[2:]
+    destination = DIR + request.args.get('to')[1:]
     moveFileTo(source, destination)
     return jsonify(getFiles())
 
@@ -114,7 +86,7 @@ def getMoveFile():
 # "mkdir": path
 @app.route('/mkdir', methods=['GET'])
 def getMkDir():
-    path = request.args.get('path')
+    path = DIR + request.args.get('path')
     mkdir(path)
     return jsonify(getFiles())
 
@@ -122,7 +94,7 @@ def getMkDir():
 # "rmdir": path
 @app.route('/rmdir', methods=['GET'])
 def rmDir():
-    path = request.args.get('path')
+    path = DIR + request.args.get('path')[2:]
     rmdir(path)
     return jsonify(getFiles())
 
@@ -130,7 +102,7 @@ def rmDir():
 # "touch": path
 @app.route('/touch', methods=['GET'])
 def createFile():
-    path = request.args.get('path')
+    path = DIR + request.args.get('path')
     mkfile(path)
     return jsonify(getFiles())
 
@@ -138,7 +110,7 @@ def createFile():
 # "rm_file": path
 @app.route('/rm_file', methods=['GET'])
 def rmFile():
-    path = request.args.get('path')
+    path = DIR + request.args.get('path')
     rmfile(path)
     return jsonify(getFiles())
 
@@ -146,7 +118,7 @@ def rmFile():
 # "download", path
 @app.route('/download', methods=['GET'])
 def download_file():
-    path = request.args.get('path')
+    path = DIR + request.args.get('path')[2:]
     return send_file(path, as_attachment=True)
 
 
@@ -155,7 +127,7 @@ def download_file():
 def upload_file():
     print("Filename", [request.form[i] for i in request.form.keys()])
     f = request.files['file']
-    f.save(f.filename)
+    f.save(DIR + f.filename)
     return jsonify(getFiles())
 
 

@@ -50,8 +50,9 @@ export default {
     },
     methods: {
         async setFiles(funct, args) {
-            this.files = await funct(...args).then((response) => {
-                return response.data[0];
+            await funct(...args).then((response) => {
+                console.log(response.data);
+                this.files = response.data;
             });
         },
         activeIsDir() {
@@ -179,7 +180,7 @@ export default {
                     );
                     const link = document.createElement("a");
                     link.href = url;
-                    link.setAttribute("download", "file.pdf"); // TODO: change name
+                    link.setAttribute("download", this.active.name); // TODO: change name
                     link.setAttribute("class", "hidden");
                     document.body.appendChild(link);
                     link.click();
