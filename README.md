@@ -34,9 +34,23 @@ docker build -t front .
 docker run -it -p 8080:8080 --rm --name dockerize-front front
 ```
 
-### name_server
+### stupid way of testing storages
 
+To start Storage Server
+```
+cd ./storage_server
+docker build -t storage .
+docker run -p 5000:5000 storage
+```
+
+To start Name Server
 ```
 cd ./name_server
-python3 main.py
+export FLASK_APP=main.py
+flask run --host 0.0.0.0 --port 5001
+```
+
+Use it to avoid collisions between ports. Also check that /front/src/requests should contain this setup:
+```
+	baseURL: "http://0.0.0.0:5001",
 ```
