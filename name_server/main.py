@@ -3,6 +3,8 @@ from flask import Flask, session, redirect, url_for, request, render_template, s
 from flask_cors import CORS
 import os
 import shutil
+import time
+
 
 app = Flask(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
@@ -18,7 +20,7 @@ def getFiles(dir=DIR):
     data = [{"index": i,
              "name": ls_dir[i],
              "size": os.stat(dir+ls_dir[i]).st_size,
-             "upd": os.stat(dir+ls_dir[i]).st_mtime} for i in range(len(ls_dir))]
+             "upd": time.ctime(os.stat(dir+ls_dir[i]).st_mtime)} for i in range(len(ls_dir))]
     for d in data:
         print(dir + d['name'])
         if os.path.isdir(dir + d['name']):
