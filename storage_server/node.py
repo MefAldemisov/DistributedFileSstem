@@ -127,8 +127,9 @@ def rmFile():
 # "download", path
 @app.route('/download', methods=['GET'])
 def download_file():
-    path = DIR + request.args.get('path')[2:]
-    return send_file(path, as_attachment=True)
+    filename = request.args.get('path')[2:]
+    path = DIR + filename
+    return send_file(filename_or_fp=path, as_attachment=True)
 
 
 # "upload", file
