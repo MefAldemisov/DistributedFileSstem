@@ -14,16 +14,6 @@ try:
 except:
     print("Fs already exist")
 
-STORAGE_IP = ['172.17.0.2']
-nodes = len(STORAGE_IP)
-counter = 0
-
-def chooseNode():
-    n = counter % nodes
-    counter+=1
-    return STORAGE_IP[n]
-
-
 def getFiles(dir=DIR):
     ls_dir = os.listdir(dir)
     data = [{"index": i,
@@ -38,6 +28,46 @@ def getFiles(dir=DIR):
     return data
 
 
+def copyFileTo(source, destination):
+    print("COPY FROM", source, "TO", destination)
+    shutil.copyfile(source, destination)
+
+
+def moveFileTo(source, destination):
+    print("MOVE FROM", source, "TO", destination)
+    shutil.move(source, destination)
+
+
+def mkdir(path):
+    print("NEW DIRECTORY CREATED")
+    os.mkdir(path)
+
+
+def rmdir(path):
+    print("REMOVE DIRECTORY")
+    shutil.rmtree(path)
+
+
+def mkfile(path):
+    print("NEW FILE CREATED")
+    open(path, 'a').close()
+
+
+def rmfile(path):
+    print("REMOVE FILE")
+    os.remove(path)
+
+
+def rm_rf():
+    print("REMOVE ALL")
+    rmdir(DIR)
+    mkdir(DIR)
+
+@app.route('/', methods=['GET'])
+def index():
+    return "Welcome to DFS!"
+
+
 # "refresh", // not related to selected
 @app.route('/refresh', methods=['GET'])
 def getListDir():
@@ -47,82 +77,74 @@ def getListDir():
 # "copy": from, to
 @app.route('/copy', methods=['GET'])
 def getCopyFileTo():
-    for storage in STORAGE_IP:
-        r = requests.get(f'http://{storage}:5000{request.full_path}')
-    #return jsonify(getFiles())
-    return r
+    source = DIR + request.args.get('from')[2:]
+    destination = DIR + request.args.get('to')[1:]
+    copyFileTo(source, destination)
+    return jsonify(getFiles())
 
 
 # "move": from, to
 @app.route('/move', methods=['GET'])
 def getMoveFile():
-    for storage in STORAGE_IP:
-        r = requests.get(f'http://{storage}:5000{request.full_path}')
-    #return jsonify(getFiles())
-    return r
+    source = DIR + request.args.get('from')[2:]
+    destination = DIR + request.args.get('to')[1:]
+    moveFileTo(source, destination)
+    return jsonify(getFiles())
 
 
 # "mkdir": path
 @app.route('/mkdir', methods=['GET'])
 def getMkDir():
-    for storage in STORAGE_IP:
-        r = requests.get(f'http://{storage}:5000{request.full_path}')
-    #return jsonify(getFiles())
-    return r
+    path = DIR + request.args.get('path')
+    mkdir(path)
+    return jsonify(getFiles())
 
 
 # "rmdir": path
 @app.route('/rmdir', methods=['GET'])
 def rmDir():
-    for storage in STORAGE_IP:
-        r = requests.get(f'http://{storage}:5000{request.full_path}')
-    #return jsonify(getFiles())
-    return r
+    path = DIR + request.args.get('path')[2:]
+    rmdir(path)
+    return jsonify(getFiles())
 
 
 # "touch": path
 @app.route('/touch', methods=['GET'])
 def createFile():
-    for storage in STORAGE_IP:
-        r = requests.get(f'http://{storage}:5000{request.full_path}')
-    #return jsonify(getFiles())
-    return r
+    path = DIR + request.args.get('path')
+    mkfile(path)
+    return jsonify(getFiles())
 
 
 # "rm_file": path
 @app.route('/rm_file', methods=['GET'])
 def rmFile():
-    for storage in STORAGE_IP:
-        r = requests.get(f'http://{storage}:5000{request.full_path}') 
-    #return jsonify(getFiles())
-    return r
+    path = DIR + request.args.get('path')
+    rmfile(path)
+    return jsonify(getFiles())
 
 
 # "download", path
 @app.route('/download', methods=['GET'])
 def download_file():
-    storage = chooseNode()
-    r = requests.get(f'http://{storage}:5000{request.full_path}')
-    return send_file(r, as_attachment=True)
+    path = DIR + request.args.get('path')[2:]
+    return send_file(path, as_attachment=True)
 
 
 # "upload", file
 @app.route('/upload/', methods=['POST'])
 def upload_file():
     print("Filename", [request.form[i] for i in request.form.keys()])
-    for storage in STORAGE_IP:
-        r = requests.post(f'http://{storage}:5000{request.full_path}')
-    #return jsonify(getFiles())
-    return r
+    f = request.files['file']
+    f.save(DIR + f.filename)
+    return jsonify(getFiles())
 
 
 # "rm_rf", // requires confirmation
 @app.route('/clear_all', methods=['GET'])
 def clear_all():
-    for storage in STORAGE_IP:
-        r = requests.post(f'http://{storage}:5000{request.full_path}')
-    #return jsonify(getFiles())
-    return r
+    rm_rf()
+    return jsonify(getFiles())
 
 
 if __name__ == "__main__":
