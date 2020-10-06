@@ -50,7 +50,6 @@ export default {
     methods: {
         async setFiles(funct, args) {
             await funct(...args).then((response) => {
-                console.log(response.data);
                 this.files = response.data;
             });
         },

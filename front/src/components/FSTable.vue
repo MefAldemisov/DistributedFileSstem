@@ -13,7 +13,7 @@ export default {
     data() {
         return {
             current_location: [],
-            active: 0,
+            active: null,
             input_value: "",
             need_input: false,
         };

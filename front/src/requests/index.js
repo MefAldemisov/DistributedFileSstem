@@ -35,7 +35,6 @@ export default {
 		await apiClient.get(`/download?path=${path}`).then((response) => {
 			url = response.data.url;
 		});
-		console.log("url", url);
 		// file promive
 		return axios.get(url, {
 			responseType: "blob",
