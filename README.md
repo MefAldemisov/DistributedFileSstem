@@ -4,9 +4,9 @@
 
 ## Authors
 
--   Bogdanova Alina
--   Dubina Nikita
--   Sirgalina Rufina
+-   Alina Bogdanova 
+-   Nikita Dubina 
+-   Rufina Sirgalina 
 
 ## NS API
 
@@ -24,33 +24,17 @@
 | **GET** `/info?name=...`                                                | REMOVED (data passed with fs)[Get file size](https://stackoverflow.com/questions/6591931/getting-file-size-in-python) <br>[Date and time of creation and modification](https://stackoverflow.com/questions/237079/how-to-get-file-creation-modification-date-times-in-python) |
 | **rm_rf** `/clear_all`                                                  | [HOWTO rm non-empty dir](https://stackoverflow.com/questions/303200/how-do-i-remove-delete-a-folder-that-is-not-empty)                                                                                                                                                        |
 
-## Docker
+## How to run locally
 
-### front
+### Start front
 
 ```
 cd ./front
 docker build -t front .
 docker run -it -p 8080:8080 --rm --name dockerize-front front
 ```
-
-### stupid way of testing storages
-
-To start Storage Server
-```
-cd ./storage_server
-docker build -t storage .
-docker run -p 5000:5000 storage
-```
-
-To start Name Server
 ```
 cd ./name_server
-export FLASK_APP=main.py
-flask run --host 0.0.0.0 --port 5001
+python3 main.py
 ```
-
-Use it to avoid collisions between ports. Also check that /front/src/requests should contain this setup:
-```
-	baseURL: "http://0.0.0.0:5001",
-```
+Access to site: `127.0.0.1:8080`
