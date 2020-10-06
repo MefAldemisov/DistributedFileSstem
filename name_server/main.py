@@ -9,19 +9,22 @@ import requests
 app = Flask(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-FILES=[]
+FILES = []
 
 STORAGE_IP = ['172.17.0.2']
 nodes = len(STORAGE_IP)
 counter = 0
 
+
 def chooseNode():
     global counter
     n = counter % nodes
-    counter+=1
+    counter += 1
     return STORAGE_IP[n]
 
 # "refresh", // not related to selected
+
+
 @app.route('/refresh', methods=['GET'])
 def getListDir():
     return jsonify(FILES)
@@ -87,7 +90,7 @@ def createFile():
 def rmFile():
     global FILES
     for storage in STORAGE_IP:
-        r = requests.get(f'http://{storage}:5000{request.full_path}') 
+        r = requests.get(f'http://{storage}:5000{request.full_path}')
         if r.status_code == 200:
             FILES = r.json()
     return jsonify(FILES)
@@ -97,11 +100,8 @@ def rmFile():
 @app.route('/download', methods=['GET'])
 def download_file():
     global FILES
-    filename = request.args.get('path')[2:]
     storage = chooseNode()
-    r = requests.get(f'http://{storage}:5000{request.full_path}')
-    open(filename, 'wb').write(r.content)
-    return send_file(filename, as_attachment=True)
+    return jsonify({"url": f'http://{storage}:5000{request.full_path}'})
 
 
 # "upload", file
@@ -111,10 +111,11 @@ def upload_file():
     print("Filename", [request.form[i] for i in request.form.keys()])
     f = request.files['file']
     f.save(f.filename)
-    data = {'file': (f.filename, open(f.filename,'rb'))}
-    
+    data = {'file': (f.filename, open(f.filename, 'rb'))}
+
     for storage in STORAGE_IP:
-        r = requests.post(f'http://{storage}:5000{request.full_path}', files=data)
+        r = requests.post(
+            f'http://{storage}:5000{request.full_path}', files=data)
         if r.status_code == 200:
             FILES = r.json()
     os.remove(f.filename)

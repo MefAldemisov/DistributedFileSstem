@@ -29,8 +29,15 @@ export default {
 	rm_rf() {
 		return apiClient.get(`/clear_all`);
 	},
-	download(path) {
-		return apiClient.get(`/download?path=${path}`, {
+	async download(path) {
+		// get url to download
+		let url;
+		await apiClient.get(`/download?path=${path}`).then((response) => {
+			url = response.data.url;
+		});
+		console.log("url", url);
+		// file promive
+		return axios.get(url, {
 			responseType: "blob",
 		});
 	},
