@@ -1,0 +1,6 @@
+version: '3.3'
+services:
+  app:
+    image: "rrufina/storage"
+    ports:
+      - "5000:5000"

@@ -11,7 +11,7 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 
 FILES = []
 
-STORAGE_IP = ['172.17.0.2']
+STORAGE_IP = ['18.216.86.164', '3.137.205.50']
 nodes = len(STORAGE_IP)
 counter = 0
 
