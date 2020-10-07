@@ -40,10 +40,11 @@ export default {
 			responseType: "blob",
 		});
 	},
-	upload(data) {
+	upload(data, path) {
 		let fd = new FormData();
 		fd.append("name", data.name);
 		fd.append("file", data);
+		fd.append("path", path);
 
 		return apiClient.post(`/upload/`, fd, {
 			headers: {

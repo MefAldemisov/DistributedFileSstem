@@ -108,14 +108,20 @@ def download_file():
 @app.route('/upload/', methods=['POST'])
 def upload_file():
     global FILES
-    print("Filename", [request.form[i] for i in request.form.keys()])
+
+    path = request.form["path"]
+    dirs = "."
+    if("/" in path):
+        dirs = "/".join(path.split("/")[:-1])  # don't add filename to the path
+
+    print("Path", dirs)
     f = request.files['file']
     f.save(f.filename)
     data = {'file': (f.filename, open(f.filename, 'rb'))}
 
     for storage in STORAGE_IP:
         r = requests.post(
-            f'http://{storage}:5000{request.full_path}', files=data)
+            f'http://{storage}:5000{request.full_path}', files=data, data={"path": dirs})
         if r.status_code == 200:
             FILES = r.json()
     os.remove(f.filename)

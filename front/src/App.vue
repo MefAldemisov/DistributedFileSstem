@@ -191,7 +191,7 @@ export default {
         },
         upload(event) {
             const f = event.target.files[0];
-            this.setFiles(apiCalls.upload, [f]);
+            this.setFiles(apiCalls.upload, [f, this.dir]);
             this.input.need_file = false;
         },
     },

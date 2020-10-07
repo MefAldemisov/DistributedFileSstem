@@ -14,6 +14,7 @@ try:
 except:
     print("Fs already exist")
 
+
 def getFiles(dir=DIR):
     ls_dir = os.listdir(dir)
     data = [{"index": i,
@@ -62,6 +63,7 @@ def rm_rf():
     print("REMOVE ALL")
     rmdir(DIR)
     mkdir(DIR)
+
 
 @app.route('/', methods=['GET'])
 def index():
@@ -137,7 +139,8 @@ def download_file():
 def upload_file():
     print("Filename", [request.form[i] for i in request.form.keys()])
     f = request.files['file']
-    f.save(DIR + f.filename)
+    dir = request.form['path'][2:]  # don't need first dot and slash
+    f.save(DIR + dir + "/" + f.filename)
     return jsonify(getFiles())
 
 
