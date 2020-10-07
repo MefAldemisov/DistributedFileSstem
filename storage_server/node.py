@@ -126,6 +126,30 @@ def rmFile():
     return jsonify(getFiles())
 
 
+@app.route('/ping', methods=['GET'])
+def heartbeat():
+    return jsonify({'resp': 200})
+
+
+@app.route('/recovery', methods=['POST'])
+def recovery():
+    if os.path.exists(DIR):
+        shutil.rmtree(DIR)
+    os.mkdir(DIR)
+    data = request.get_json()
+    directories = data['dirs']
+    files = data['files']
+    storage = data['ip']
+    for d in directories:
+        mkdir(d)
+    for f in files:
+        data = requests.get(f'http://{storage}:5000{f}')
+        file = open(DIR + f, 'wb')
+        file.write(data)
+        file.close()
+    return jsonify({'resp': 200})
+
+
 # "download", path
 @app.route('/download', methods=['GET'])
 def download_file():

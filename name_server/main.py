@@ -10,6 +10,8 @@ app = Flask(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 FILES = []
+UP_NODES = ['18.216.86.164', '3.137.205.50', '18.218.51.168']
+DOWN_NODES = []
 
 STORAGE_IP = ['18.216.86.164', '3.137.205.50', '18.218.51.168']
 nodes = len(STORAGE_IP)-1
@@ -17,6 +19,7 @@ counter = 0
 
 
 def chooseNode():
+    upCheck()
     global counter
     n = counter % nodes
     counter += 1
@@ -27,12 +30,14 @@ def chooseNode():
 
 @app.route('/refresh', methods=['GET'])
 def getListDir():
+    upCheck()
     return jsonify(FILES)
 
 
 # "copy": from, to
 @app.route('/copy', methods=['GET'])
 def getCopyFileTo():
+    upCheck()
     global FILES
     for storage in STORAGE_IP:
         r = requests.get(f'http://{storage}:5000{request.full_path}')
@@ -44,6 +49,7 @@ def getCopyFileTo():
 # "move": from, to
 @app.route('/move', methods=['GET'])
 def getMoveFile():
+    upCheck()
     global FILES
     for storage in STORAGE_IP:
         r = requests.get(f'http://{storage}:5000{request.full_path}')
@@ -55,6 +61,7 @@ def getMoveFile():
 # "mkdir": path
 @app.route('/mkdir', methods=['GET'])
 def getMkDir():
+    upCheck()
     global FILES
     for storage in STORAGE_IP:
         r = requests.get(f'http://{storage}:5000{request.full_path}')
@@ -66,6 +73,7 @@ def getMkDir():
 # "rmdir": path
 @app.route('/rmdir', methods=['GET'])
 def rmDir():
+    upCheck()
     global FILES
     for storage in STORAGE_IP:
         r = requests.get(f'http://{storage}:5000{request.full_path}')
@@ -77,6 +85,7 @@ def rmDir():
 # "touch": path
 @app.route('/touch', methods=['GET'])
 def createFile():
+    upCheck()
     global FILES
     for storage in STORAGE_IP:
         r = requests.get(f'http://{storage}:5000{request.full_path}')
@@ -88,6 +97,7 @@ def createFile():
 # "rm_file": path
 @app.route('/rm_file', methods=['GET'])
 def rmFile():
+    upCheck()
     global FILES
     for storage in STORAGE_IP:
         r = requests.get(f'http://{storage}:5000{request.full_path}')
@@ -96,9 +106,53 @@ def rmFile():
     return jsonify(FILES)
 
 
+def getFiles(node, path):
+    upCheck()
+    paths = []
+    files = []
+    if 'data' in node:
+        files.append(path + node['name'])
+    else:
+        paths.append(path + node['name'])
+        for n in node['name']:
+            tmp = getFiles(n, path + node['name'] + "/")
+            files.extend(tmp[1])
+            paths.extend(tmp[0])
+    return paths, files
+
+
+def upCheck():
+    for node in UP_NODES:
+        try:
+            res = requests.get(f'http://' + node + ':5000/ping')
+        except requests.exceptions.ConnectionError:
+            UP_NODES.remove(node)
+            DOWN_NODES.append(node)
+            return 500
+        else:
+            if res.status_code != 200:
+                UP_NODES.remove(node)
+                DOWN_NODES.append(node)
+    for node in DOWN_NODES:
+        try:
+            res = requests.get(f'http://' + node + ':5000/ping')
+        except requests.exceptions.ConnectionError:
+            pass
+        else:
+            if res.status_code == 200:
+                DOWN_NODES.remove(node)
+                tmp = getFiles(FILES, "")
+                d = {'dirs': tmp[0], 'files': tmp[1], 'ip': UP_NODES[0]}
+                res = requests.post(
+                    'http://' + node + ':5000/recovery', data=d)
+                UP_NODES.append(node)
+
 # "download", path
+
+
 @app.route('/download', methods=['GET'])
 def download_file():
+    upCheck()
     global FILES
     storage = chooseNode()
     return jsonify({"url": f'http://{storage}:5000{request.full_path}'})
@@ -107,6 +161,7 @@ def download_file():
 # "upload", file
 @app.route('/upload/', methods=['POST'])
 def upload_file():
+    upCheck()
     global FILES
 
     path = request.form["path"]
@@ -131,6 +186,7 @@ def upload_file():
 # "rm_rf", // requires confirmation
 @app.route('/clear_all', methods=['GET'])
 def clear_all():
+    upCheck()
     global FILES
     for storage in STORAGE_IP:
         r = requests.get(f'http://{storage}:5000{request.full_path}')
