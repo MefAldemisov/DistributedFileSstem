@@ -24,9 +24,9 @@
 | **GET** `/info?name=...`                                                | **REMOVED** (data passed with fs)                     |
 | **rm_rf** `/clear_all`                                                  | JSON with files description(empty array in this case) |
 
-## Docker
+## How to run locally
 
-### Front
+### Start front
 
 ```
 cd ./front
@@ -57,3 +57,10 @@ Use it to avoid collisions between ports. Also check that `/front/src/requests` 
 ```
 	baseURL: "http://0.0.0.0:5001",
 ```
+
+```
+cd ./name_server
+python3 main.py
+```
+
+Access to site: `127.0.0.1:8080`

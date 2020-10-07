@@ -2,7 +2,8 @@ import axios from "axios";
 
 axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 let apiClient = axios.create({
-	baseURL: "http://0.0.0.0:5001",
+	baseURL: "http://0.0.0.0:5000",
+	//baseURL: "http://3.137.208.101:5000",
 });
 export default {
 	getFiles() {

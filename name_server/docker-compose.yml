@@ -1,0 +1,10 @@
+version: '3.3'
+services:
+  front:
+    image: "rrufina/dfs-front:newip"
+    ports:
+      - "8080:8080"
+  app:
+    image: "rrufina/dfs-nameserver:new"
+    ports:
+      - "5000:5000"
