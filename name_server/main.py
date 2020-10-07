@@ -10,10 +10,10 @@ app = Flask(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 FILES = []
-UP_NODES = ['18.216.86.164', '3.137.205.50', '18.218.51.168']
+UP_NODES = ['10.0.15.11', '10.0.15.12', '10.0.15.13']
 DOWN_NODES = []
 
-STORAGE_IP = ['18.216.86.164', '3.137.205.50', '18.218.51.168']
+STORAGE_IP = ['10.0.15.11', '10.0.15.12', '10.0.15.13']
 nodes = len(STORAGE_IP)-1
 counter = 0
 
