@@ -42,20 +42,22 @@ export default {
     },
     methods: {
         setActive(index) {
-            if (this.active != index) {
-                this.active = index;
-                this.$emit("upd_active", this.current_files[index]);
-            } else if (this.current_files[index].data) {
-                // if is dir -> go deep
-                if (this.current_files[index].data.length > 0) {
+            try {
+                if (this.active != index) {
+                    this.active = index;
+                    this.$emit("upd_active", this.current_files[index]);
+                } else if (this.current_files[index].data) {
+                    // if is dir -> go deep
                     this.current_location.push(index);
-                    this.active = 0;
-                    this.$emit("upd_active", this.current_files[0]);
-                } else {
-                    alert("The directory is empty");
+                    if (this.current_files[index].data.length > 0) {
+                        this.active = 0;
+                        this.$emit("upd_active", this.current_files[0]);
+                    }
                 }
+                this.$emit("upd_dir", this.current_path);
+            } catch (e) {
+                console.log("went deeper");
             }
-            this.$emit("upd_dir", this.current_path);
         },
         backDir() {
             this.current_location.pop();

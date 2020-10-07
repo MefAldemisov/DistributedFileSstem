@@ -159,7 +159,11 @@ export default {
                 let arg = this.input.name;
                 // path expreaction
                 let dir = this.dir.split("/");
-                dir[dir.length - 1] = arg;
+                if (!this.active || !this.active.data) {
+                    dir[dir.length - 1] = arg;
+                } else {
+                    dir.push(arg);
+                }
                 // check that such file or dir doesn't exist
                 if (!this.checkExistance(dir.slice(1))) {
                     dir = dir.join("/");
@@ -217,7 +221,11 @@ export default {
         },
         upload(event) {
             const f = event.target.files[0];
-            this.setFiles(apiCalls.upload, [f, this.dir]);
+            let d = this.dir;
+            if (this.active.data) {
+                d += "/kostil.txt";
+            }
+            this.setFiles(apiCalls.upload, [f, d]);
             this.input.need_file = false;
         },
     },
