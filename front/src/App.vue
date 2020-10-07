@@ -126,6 +126,17 @@ export default {
                     if (rm == true) {
                         this.setFiles(apiCalls.rm_rf, []);
                     }
+                    this.dir = ".";
+                    this.active = {};
+                    this.input = {
+                        name: "",
+                        dir: "",
+                        need_name: false,
+                        need_dir: false,
+                        callback: null,
+                        args: 0, // 1- file, 2-dir 3-both
+                        need_file: false,
+                    };
             }
         },
         iconIsNotActive(type) {
