@@ -50,6 +50,7 @@ export default {
                 if (this.current_files[index].data.length > 0) {
                     this.current_location.push(index);
                     this.active = 0;
+                    this.$emit("upd_active", this.current_files[0]);
                 } else {
                     alert("The directory is empty");
                 }
