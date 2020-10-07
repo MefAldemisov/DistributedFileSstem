@@ -142,7 +142,12 @@ export default {
             if (change == "name" && this.input.args == 1) {
                 // set name - call calback
                 let arg = this.input.name;
-                this.setFiles(this.input.callback, [arg]);
+                // path expreaction
+                let dir = this.dir.split("/");
+                dir[dir.length - 1] = arg;
+                dir = dir.join("/");
+
+                this.setFiles(this.input.callback, [dir]);
                 return;
             } else if (change == "dir" && this.input.args == 2) {
                 // set dir callback (e.g. move)

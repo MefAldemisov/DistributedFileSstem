@@ -21,7 +21,7 @@ export default {
                     // if is dir
                     const subdirs = this.listOfPaths(
                         dir[i].data,
-                        path + dir[i].name
+                        path + "/" + dir[i].name
                     );
                     subdirs.forEach((el) => {
                         paths.push(el);
