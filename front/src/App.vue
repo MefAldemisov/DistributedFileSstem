@@ -138,6 +138,21 @@ export default {
                 !this.active.name
             );
         },
+        checkExistance(dir, fs = this.files) {
+            for (let f of fs) {
+                if (f.name == dir[0]) {
+                    if (f.data && dir.length > 1) {
+                        // if dir -> go deep
+                        return this.checkExistance(dir.slice(1), f.data);
+                    } else {
+                        // if file - return
+                        console.log("TRUE");
+                        return true;
+                    }
+                }
+            }
+            return false;
+        },
         checkInput(change) {
             if (change == "name" && this.input.args == 1) {
                 // set name - call calback
@@ -145,9 +160,15 @@ export default {
                 // path expreaction
                 let dir = this.dir.split("/");
                 dir[dir.length - 1] = arg;
-                dir = dir.join("/");
-
-                this.setFiles(this.input.callback, [dir]);
+                // check that such file or dir doesn't exist
+                if (!this.checkExistance(dir.slice(1))) {
+                    dir = dir.join("/");
+                    this.setFiles(this.input.callback, [dir]);
+                } else {
+                    alert(
+                        "Such file or directory already exist, please, pick another name"
+                    );
+                }
                 return;
             } else if (change == "dir" && this.input.args == 2) {
                 // set dir callback (e.g. move)
