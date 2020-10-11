@@ -68,3 +68,7 @@ Access to site: `127.0.0.1:8080`
 ## Main part
 
 Interface is acceesible on http://3.23.171.160:8080
+
+![](https://i.imgur.com/Y0f17iI.png)
+![](https://i.imgur.com/p1mPcUG.png)
+![](https://i.imgur.com/yHIWCPR.png)
