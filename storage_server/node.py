@@ -144,7 +144,7 @@ def recovery():
     for f in files:
         data = requests.get(f'http://{storage}:5000/download', params={'path': ('./'+f)})
         file = open(DIR + f, 'wb')
-        file.write(data)
+        file.write(data.content)
         file.close()
     return jsonify({'resp': 200})
 
