@@ -14,13 +14,13 @@ DOWN_NODES = []
 
 STORAGE_IP = ['18.217.14.176', '3.129.83.36', '3.138.70.26']
 BACKUP_NODE = '3.138.70.26'
-nodes = len(STORAGE_IP)
 counter = 0
 
 
 def chooseNode():
     upCheck()
     global counter
+    nodes = len(STORAGE_IP)
     n = counter % nodes
     counter += 1
     if STORAGE_IP[n] != BACKUP_NODE:
