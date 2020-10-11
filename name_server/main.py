@@ -10,7 +10,6 @@ app = Flask(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 FILES = []
-UP_NODES = ['18.217.14.176', '3.129.83.36', '3.138.70.26']
 DOWN_NODES = []
 
 STORAGE_IP = ['18.217.14.176', '3.129.83.36', '3.138.70.26']
@@ -122,16 +121,16 @@ def getFiles(node, path):
 
 
 def upCheck():
-    for node in UP_NODES:
+    for node in STORAGE_IP:
         try:
             res = requests.get(f'http://{node}:5000/ping')
         except requests.exceptions.ConnectionError:
-            UP_NODES.remove(node)
+            STORAGE_IP.remove(node)
             DOWN_NODES.append(node)
             return 500
         else:
             if res.status_code != 200:
-                UP_NODES.remove(node)
+                STORAGE_IP.remove(node)
                 DOWN_NODES.append(node)
     for node in DOWN_NODES:
         try:
@@ -142,10 +141,10 @@ def upCheck():
             if res.status_code == 200:
                 DOWN_NODES.remove(node)
                 tmp = getFiles(FILES, "")
-                d = {'dirs': tmp[0], 'files': tmp[1], 'ip': UP_NODES[0]}
+                d = {'dirs': tmp[0], 'files': tmp[1], 'ip': STORAGE_IP[0]}
                 res = requests.post(
                     'http://{node}:5000/recovery', data=d)
-                UP_NODES.append(node)
+                STORAGE_IP.append(node)
 
 # "download", path
 
