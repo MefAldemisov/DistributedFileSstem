@@ -150,7 +150,7 @@ def upCheck():
                     tmp = getFiles(n, "")
                     files.extend(tmp[1])
                     paths.extend(tmp[0])
-                d = {'dirs': paths, 'files': files, 'ip': STORAGE_IP[0]}
+                d = {'dirs': paths, 'files': files, 'ip': BACKUP_NODE}
                 res = requests.post(
                     'http://{node}:5000/recovery', data=d)
                 STORAGE_IP.append(node)
