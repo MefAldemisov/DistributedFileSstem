@@ -128,7 +128,7 @@ def getFiles(node, path):
 def upCheck():
     for node in STORAGE_IP:
         try:
-            res = requests.get(f'http://{node}:5000/ping')
+            res = requests.get(f'http://{node}:5000/ping', timeout=3)
         except requests.exceptions.ConnectionError:
             STORAGE_IP.remove(node)
             DOWN_NODES.append(node)
@@ -139,7 +139,7 @@ def upCheck():
                 DOWN_NODES.append(node)
     for node in DOWN_NODES:
         try:
-            res = requests.get(f'http://{node}:5000/ping')
+            res = requests.get(f'http://{node}:5000/ping', timeout=3)
         except requests.exceptions.ConnectionError:
             pass
         else:
