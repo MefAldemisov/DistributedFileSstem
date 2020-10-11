@@ -144,8 +144,13 @@ def upCheck():
         else:
             if res.status_code == 200:
                 DOWN_NODES.remove(node)
-                tmp = getFiles(FILES, "")
-                d = {'dirs': tmp[0], 'files': tmp[1], 'ip': STORAGE_IP[0]}
+                files = []
+                paths = []
+                for n in FILES:
+                    tmp = getFiles(n, "")
+                    files.extend(tmp[1])
+                    paths.extend(tmp[0])
+                d = {'dirs': paths, 'files': files, 'ip': STORAGE_IP[0]}
                 res = requests.post(
                     'http://{node}:5000/recovery', data=d)
                 STORAGE_IP.append(node)
