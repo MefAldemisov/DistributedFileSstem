@@ -34,7 +34,7 @@ def chooseNode():
 
 @app.route('/refresh', methods=['GET'])
 def getListDir():
-    upCheck()
+    # upCheck()
     return jsonify(FILES)
 
 
