@@ -64,3 +64,7 @@ python3 main.py
 ```
 
 Access to site: `127.0.0.1:8080`
+
+## Main part
+
+Interface is acceesible on http://3.23.171.160:8080
