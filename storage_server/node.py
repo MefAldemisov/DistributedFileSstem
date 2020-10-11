@@ -143,7 +143,7 @@ def recovery():
     for d in directories:
         mkdir(d)
     for f in files:
-        data = requests.get(f'http://10.0.15.13:5000{f}')
+        data = requests.get(f'http://{storage}:5000{f}')
         file = open(DIR + f, 'wb')
         file.write(data)
         file.close()

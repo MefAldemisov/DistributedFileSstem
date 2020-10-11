@@ -124,7 +124,7 @@ def getFiles(node, path):
 def upCheck():
     for node in UP_NODES:
         try:
-            res = requests.get(f'http://' + node + ':5000/ping')
+            res = requests.get(f'http://{node}:5000/ping')
         except requests.exceptions.ConnectionError:
             UP_NODES.remove(node)
             DOWN_NODES.append(node)
@@ -135,7 +135,7 @@ def upCheck():
                 DOWN_NODES.append(node)
     for node in DOWN_NODES:
         try:
-            res = requests.get(f'http://' + node + ':5000/ping')
+            res = requests.get(f'http://{node}:5000/ping')
         except requests.exceptions.ConnectionError:
             pass
         else:
@@ -144,7 +144,7 @@ def upCheck():
                 tmp = getFiles(FILES, "")
                 d = {'dirs': tmp[0], 'files': tmp[1], 'ip': UP_NODES[0]}
                 res = requests.post(
-                    'http://' + node + ':5000/recovery', data=d)
+                    'http://{node}:5000/recovery', data=d)
                 UP_NODES.append(node)
 
 # "download", path
