@@ -111,17 +111,16 @@ def rmFile():
 
 
 def getFiles(node, path):
-    upCheck()
     paths = []
     files = []
     if 'data' in node:
-        files.append(path + node['name'])
-    else:
         paths.append(path + node['name'])
-        for n in node['name']:
+        for n in node['data']:
             tmp = getFiles(n, path + node['name'] + "/")
             files.extend(tmp[1])
             paths.extend(tmp[0])
+    else:
+        files.append(path + node['name'])
     return paths, files
 
 
