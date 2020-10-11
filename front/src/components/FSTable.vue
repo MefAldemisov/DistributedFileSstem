@@ -72,7 +72,6 @@ export default {
         <table>
             <thead>
                 <th>Filename</th>
-                <th>Size</th>
                 <th>Last update</th>
             </thead>
             <tbody>
@@ -92,7 +91,6 @@ export default {
                         <icon v-if="file.data" type="arrow" width="1rem"></icon
                         >{{ file.name }}
                     </td>
-                    <td>{{ file.size }}</td>
                     <td>{{ file.upd }}</td>
                 </tr>
             </tbody>
