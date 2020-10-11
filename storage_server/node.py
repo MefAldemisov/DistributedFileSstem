@@ -19,7 +19,7 @@ def getFiles(dir=DIR):
     ls_dir = os.listdir(dir)
     data = [{"index": i,
              "name": ls_dir[i],
-             "size": os.stat(dir+ls_dir[i]).st_size,
+             "size": os.path.getsize(dir+ls_dir[i]),
              "upd": time.ctime(os.stat(dir+ls_dir[i]).st_mtime)} for i in range(len(ls_dir))]
     for d in data:
         print(dir + d['name'])
