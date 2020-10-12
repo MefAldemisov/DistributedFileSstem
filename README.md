@@ -1,74 +1,80 @@
-# Distributed File System
+# Project 2: Distributed File System
 
-![Interface](https://i.imgur.com/EByMnnR.png)
+### Background Information
 
-## Authors
+#### Group Description
 
--   Alina Bogdanova
--   Nikita Dubina
--   Rufina Sirgalina
+1. Alina Bogdanova (B18-SE-02)
+2. Nikita Dubina (B18-SB-01) 
+3. Rufina Sirgalina (B18-DS-02)
 
-## NS API
+#### Repositories
 
-| Request                                                                 | Response                                              |
-| ----------------------------------------------------------------------- | ----------------------------------------------------- |
-| **GET** `/refresh`                                                      | JSON with files description                           |
-| **GET** `/copy?from=...&to=...` (`from` and `to` - pathes to the files) | JSON with files description                           |
-| **GET** `/move?from=...&to=...` (`from` and `to` - pathes to the files) | JSON with files description                           |
-| **GET** `/mkdir?path=...`                                               | JSON with files description                           |
-| **GET** `/rmdir?path=...`                                               | JSON with files description                           |
-| **GET** `/touch?path=...`                                               | JSON with files description                           |
-| **GET** `/rm_file?path=...`                                             | JSON with files description                           |
-| **GET** `/download?path=...`                                            | File                                                  |
-| **POST** (`/upload`): file (`file`) + dir (`path`)                      | JSON with files description                           |
-| **GET** `/info?name=...`                                                | **REMOVED** (data passed with fs)                     |
-| **rm_rf** `/clear_all`                                                  | JSON with files description(empty array in this case) |
+[GitHub Repository](https://github.com/MefAldemisov/DistributedFileSstem)
+[DockerHub Repo: Name server](https://hub.docker.com/repository/docker/rrufina/dfs-nameserver)
+[DockerHub Repo: Storage server](https://hub.docker.com/repository/docker/rrufina/storage)
+[DockerHub Repo: Client](https://hub.docker.com/repository/docker/rrufina/dfs-front)
 
-## How to run locally
+### Task Description
 
-### Start front
+The goal of the project was to impдement our own distributed file system.
+The file system should support certain directory and file operations. Files should be replicated on multiple storage servers. DFS should be fault-tolerant and the data should be accessible even if some of the network nodes are offline.
 
-```
-cd ./front
-docker build -t front .
-docker run -it -p 8080:8080 --rm --name dockerize-front front
-```
 
-### Way of testing storages
+### Architecture
 
-To start Storage Server
+![](./images/1.png)
 
-```bash
-cd ./storage_server
-docker build -t storage .
-docker run -p 5000:5000 storage
-```
+Our Distributed File System consists of two main components: Name Server and Storage Servers. All of them are written on python using Flask framework. It was decided that the client will be implemented using the web interface.  
 
-To start Name Server
+All servers are located within the same private network. Client has an access to name server. Each time the client changes the state of the file system, all changes are sequentially replicated to all storage. If the client sends a request to download a file, the nameserver asks one of the available storage to provide it with this file (the backup storage does not take part in downloading).
 
-```bash
-cd ./name_server
-export FLASK_APP=main.py
-flask run --host 0.0.0.0 --port 5001
-```
+#### Recovery Mechanism
 
-Use it to avoid collisions between ports. Also check that `/front/src/requests` should contain this setup:
+![](./images/2.png)
 
-```
-	baseURL: "http://0.0.0.0:5001",
-```
+If the nameserver notices that the storage that was not responding is now available, it sends a recovery request to this node (1). The newly available storage does not contain any files, but it knows the hierarchical scheme of the file system. The storage sends download requests to the backup server (2). The backup server transfers all the files it has to the storage (3).
 
-```
-cd ./name_server
-python3 main.py
-```
+Assumption: To make our system fault-tolerant, we assumed that forbidding the client to download files from the backup server will much reduce the probability that the backup server will crash. Therefore the backup server will always have a consistent state of the file system.
 
-Access to site: `127.0.0.1:8080`
+### System Usage
 
-## Main part
+![](./images/3.png)
 
-Interface is acceesible on http://3.23.171.160:8080
+The user has access to DFS through client web-interface. 
+Each icon represents available operations: refresh, copy, move, create/remove directory, create/remove file, download, upload, clear all. Clint send requests to name server, which redirects requests to storage servers. The structure of the file system is displayed to the user on the main page
 
-![](https://i.imgur.com/Y0f17iI.png)
-![](https://i.imgur.com/p1mPcUG.png)
-![](https://i.imgur.com/yHIWCPR.png)
+The site is available [here](http://3.23.171.160:8080/)
+#### REST API
+
+| Task             | Method  | Path                                           |
+|------------------|:-------:|------------------------------------------------|
+| Refresh system   | **GET** | /refresh                                       |
+| Copy file        | **GET** | /copy?from={source_path}&to={destination_path} |
+| Move file        | **GET** | /move?from={source_path}&to={destination_path} |
+| Create directory | **GET** | /mkdir?path={path}                             |
+| Remove directory | **GET** | /rmdir?path={path}                             |
+| Create file      | **GET** | /touch?path={path}                             |
+| Remove file      | **GET** | /rm_file?path={path}                           |
+| Download file    | **GET** | /download?path={path}                          |
+| Upload file      | **POST**| /upload                                        |
+| Clear system     | **GET** | /clear_all                                     |
+
+
+
+### Contributions
+
+Every team member contributed to the result by attending the meetings, participating in the discussions, and testing the application.
+
+
+1. **Alina Bogdanova**
+	- Client creation
+	- Implementing communication between client and name server
+2. **Nikita Dubina**
+	- Creation CheckUp and Recovery mechanism
+	- Managing AWS instances 
+3. **Rufina Sirgalina**
+	- Storage creation
+	- Implementing communication between name server and storages
+
+### Conclusion
