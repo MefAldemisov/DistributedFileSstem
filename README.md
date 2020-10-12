@@ -10,10 +10,10 @@
 
 #### Repositories
 
-[GitHub Repository](https://github.com/MefAldemisov/DistributedFileSstem)
-[DockerHub Repo: Name server](https://hub.docker.com/repository/docker/rrufina/dfs-nameserver)
-[DockerHub Repo: Storage server](https://hub.docker.com/repository/docker/rrufina/storage)
-[DockerHub Repo: Client](https://hub.docker.com/repository/docker/rrufina/dfs-front)
+- [GitHub Repository](https://github.com/MefAldemisov/DistributedFileSstem)
+- [DockerHub Repo: Name server](https://hub.docker.com/repository/docker/rrufina/dfs-nameserver)
+- [DockerHub Repo: Storage server](https://hub.docker.com/repository/docker/rrufina/storage)
+- [DockerHub Repo: Client](https://hub.docker.com/repository/docker/rrufina/dfs-front)
 
 ### Task Description
 
@@ -39,7 +39,7 @@ Assumption: To make our system fault-tolerant, we assumed that forbidding the cl
 
 ### System Usage
 
-![](./images/3.png)
+![](./images/3.jpg)
 
 The user has access to DFS through client web-interface. 
 Each icon represents available operations: refresh, copy, move, create/remove directory, create/remove file, download, upload, clear all. Clint send requests to name server, which redirects requests to storage servers. The structure of the file system is displayed to the user on the main page
@@ -71,7 +71,7 @@ Every team member contributed to the result by attending the meetings, participa
 	- Client creation
 	- Implementing communication between client and name server
 2. **Nikita Dubina**
-	- Creation CheckUp and Recovery mechanism
+	- Creation of CheckUp and Recovery mechanism
 	- Managing AWS instances 
 3. **Rufina Sirgalina**
 	- Storage creation
