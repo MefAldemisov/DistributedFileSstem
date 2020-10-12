@@ -15,6 +15,7 @@ except:
     print("Fs already exist")
 
 
+# get list of all files
 def getFiles(dir=DIR):
     ls_dir = os.listdir(dir)
     data = [{"index": i,
@@ -69,7 +70,7 @@ def index():
     return "Welcome to DFS!"
 
 
-# "refresh", // not related to selected
+# "refresh"
 @app.route('/refresh', methods=['GET'])
 def getListDir():
     return jsonify(getFiles())
@@ -93,7 +94,7 @@ def getMoveFile():
     return jsonify(getFiles())
 
 
-# "mkdir": path
+# "create directory": path
 @app.route('/mkdir', methods=['GET'])
 def getMkDir():
     path = DIR + request.args.get('path')
@@ -101,7 +102,7 @@ def getMkDir():
     return jsonify(getFiles())
 
 
-# "rmdir": path
+# "remove directory": path
 @app.route('/rmdir', methods=['GET'])
 def rmDir():
     path = DIR + request.args.get('path')[2:]
@@ -109,7 +110,7 @@ def rmDir():
     return jsonify(getFiles())
 
 
-# "touch": path
+# "create file": path
 @app.route('/touch', methods=['GET'])
 def createFile():
     path = DIR + request.args.get('path')
@@ -117,36 +118,12 @@ def createFile():
     return jsonify(getFiles())
 
 
-# "rm_file": path
+# "remove file": path
 @app.route('/rm_file', methods=['GET'])
 def rmFile():
     path = DIR + request.args.get('path')
     rmfile(path)
     return jsonify(getFiles())
-
-
-@app.route('/ping', methods=['GET'])
-def heartbeat():
-    return jsonify({'resp': 200})
-
-
-@app.route('/recovery', methods=['POST'])
-def recovery():
-    if os.path.exists(DIR):
-        shutil.rmtree(DIR)
-    os.mkdir(DIR)
-    data = request.get_json()
-    directories = data['dirs']
-    files = data['files']
-    storage = data['ip']
-    for d in directories:
-        mkdir(d)
-    for f in files:
-        data = requests.get(f'http://{storage}:5000/download', params={'path': ('./'+f)})
-        file = open(DIR + f, 'wb')
-        file.write(data.content)
-        file.close()
-    return jsonify({'resp': 200})
 
 
 # "download", path
@@ -167,11 +144,37 @@ def upload_file():
     return jsonify(getFiles())
 
 
-# "rm_rf", // requires confirmation
+# "clear all", 
 @app.route('/clear_all', methods=['GET'])
 def clear_all():
     rm_rf()
     return jsonify(getFiles())
+
+
+# ping - chech if node is available
+@app.route('/ping', methods=['GET'])
+def heartbeat():
+    return jsonify({'resp': 200})
+
+
+# recreate file system from backup image
+@app.route('/recovery', methods=['POST'])
+def recovery():
+    if os.path.exists(DIR):
+        shutil.rmtree(DIR)
+    os.mkdir(DIR)
+    data = request.get_json()
+    directories = data['dirs']
+    files = data['files']
+    storage = data['ip']
+    for d in directories:
+        mkdir(DIR+d)
+    for f in files:
+        data = requests.get(f'http://{storage}:5000/download', params={'path': ('./'+f)})
+        file = open(DIR + f, 'wb')
+        file.write(data.content)
+        file.close()
+    return jsonify({'resp': 200})
 
 
 if __name__ == "__main__":
